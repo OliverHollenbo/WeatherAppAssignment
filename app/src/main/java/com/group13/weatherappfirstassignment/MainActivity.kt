@@ -8,20 +8,18 @@ import androidx.compose.material.Surface
 import com.group13.weatherappfirstassignment.navigation.AppNavGraph
 import com.group13.weatherappfirstassignment.ui.theme.WeatherAppTheme
 import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize Firebase
+        // Initialize Firebase once
         FirebaseApp.initializeApp(this)
-        val auth = FirebaseAuth.getInstance()
 
         setContent {
             WeatherAppTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    AppNavGraph(auth = auth)
+                    AppNavGraph()
                 }
             }
         }

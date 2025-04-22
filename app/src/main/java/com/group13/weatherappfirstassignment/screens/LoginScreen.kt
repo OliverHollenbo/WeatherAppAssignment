@@ -1,6 +1,5 @@
 package com.group13.weatherappfirstassignment.screens
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -11,13 +10,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.firebase.auth.FirebaseAuth
+import com.group13.weatherappfirstassignment.viewmodels.AuthViewModel
 
 @Composable
-fun LoginScreen(navController: NavController, auth: FirebaseAuth) {
+fun LoginScreen(navController: NavController, viewModel: AuthViewModel) {
     val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val loading by viewModel.loading.collectAsState()
+    val error by viewModel.error.collectAsState()
 
     Column(
         modifier = Modifier
@@ -49,20 +51,13 @@ fun LoginScreen(navController: NavController, auth: FirebaseAuth) {
 
         Button(
             onClick = {
-                auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
-                            navController.navigate("home") {
-                                popUpTo("login") { inclusive = true }
-                            }
-                        } else {
-                            Toast.makeText(context, "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                            Log.e("Login", "Error: ", task.exception)
-                        }
-                    }
+                viewModel.login(email, password) {
+                    Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
+                    navController.navigate("home")
+                }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !loading
         ) {
             Text("Login")
         }
@@ -71,6 +66,11 @@ fun LoginScreen(navController: NavController, auth: FirebaseAuth) {
 
         TextButton(onClick = { navController.navigate("signup") }) {
             Text("Don't have an account? Sign up")
+        }
+
+        if (error != null) {
+            Spacer(modifier = Modifier.height(10.dp))
+            Text("Error: $error", color = MaterialTheme.colors.error)
         }
     }
 }
