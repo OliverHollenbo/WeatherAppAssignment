@@ -49,4 +49,15 @@ class AuthViewModel : ViewModel() {
                 }
         }
     }
+
+    fun logout(onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            FirebaseAuth.getInstance().signOut()
+            onSuccess()
+        }
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return auth.currentUser != null
+    }
 }

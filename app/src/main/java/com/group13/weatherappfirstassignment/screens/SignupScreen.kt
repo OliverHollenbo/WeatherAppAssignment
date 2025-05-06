@@ -1,6 +1,5 @@
 package com.group13.weatherappfirstassignment.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -15,9 +14,11 @@ import com.group13.weatherappfirstassignment.viewmodels.AuthViewModel
 @Composable
 fun SignupScreen(navController: NavController, viewModel: AuthViewModel) {
     val context = LocalContext.current
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    // Collect loading and error states from the ViewModel
     val loading by viewModel.loading.collectAsState()
     val error by viewModel.error.collectAsState()
 
@@ -52,25 +53,32 @@ fun SignupScreen(navController: NavController, viewModel: AuthViewModel) {
         Button(
             onClick = {
                 viewModel.signup(email, password) {
-                    Toast.makeText(context, "Signup successful", Toast.LENGTH_SHORT).show()
-                    navController.navigate("home")
+                    navController.navigate("home") {
+                        // Remove signup/login screens from backstack
+                        popUpTo("login") { inclusive = true }
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !loading
+            enabled = !loading // Disable button while loading
         ) {
-            Text("Sign Up")
+            Text(if (loading) "Signing up..." else "Sign Up")
         }
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        TextButton(onClick = { navController.navigate("login") }) {
-            Text("Already have an account? Log in")
+        TextButton(
+            onClick = { navController.navigate("login") }
+        ) {
+            Text("Already have an account? Login")
         }
 
         if (error != null) {
-            Spacer(modifier = Modifier.height(10.dp))
-            Text("Error: $error", color = MaterialTheme.colors.error)
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = error ?: "",
+                color = MaterialTheme.colors.error
+            )
         }
     }
 }

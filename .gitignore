@@ -1,19 +1,20 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
 # Android Studio
 .idea/
 *.iml
-.gradle/
 local.properties
-build/
 captures/
 .externalNativeBuild/
 .cxx/
-*.apk
-*.ap_
-*.dex
-*.class
-*.jar
-*.war
-*.ear
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Kotlin/Jetpack Compose
 .kotlin/
@@ -24,22 +25,28 @@ google-services.json
 *.keystore
 *.jks
 
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# Log files
+# Logs and crash reports
 *.log
-
-# Crash reports
 hs_err_pid*
 replay_pid*
 
-# Other package and archive formats
+# Compose build caches
+composeCompiler/
+
+# Output files
+*.apk
+*.ap_
+*.dex
+*.class
+*.jar
+*.war
+*.ear
+
+# Archives
 *.zip
 *.tar.gz
 *.rar
 *.7z
 
-# Jetpack Compose compiler caches
-composeCompiler/
+# App-specific build folder
+app/build/

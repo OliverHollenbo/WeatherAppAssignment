@@ -6,19 +6,20 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.group13.weatherappfirstassignment.screens.LoginScreen
-import com.group13.weatherappfirstassignment.screens.SignupScreen
 import com.group13.weatherappfirstassignment.screens.HomeScreen
+import com.group13.weatherappfirstassignment.screens.LoginScreen
+import com.group13.weatherappfirstassignment.screens.NearbyStationsScreen
+import com.group13.weatherappfirstassignment.screens.SignupScreen
 import com.group13.weatherappfirstassignment.viewmodels.AuthViewModel
 
 @Composable
-fun AppNavGraph() {
+fun AppNavGraph(startDestination: String) {
     val navController: NavHostController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
 
     NavHost(
         navController = navController,
-        startDestination = "login"
+        startDestination = startDestination
     ) {
         composable("login") {
             LoginScreen(navController = navController, viewModel = authViewModel)
@@ -27,7 +28,11 @@ fun AppNavGraph() {
             SignupScreen(navController = navController, viewModel = authViewModel)
         }
         composable("home") {
-            HomeScreen()
+            HomeScreen(navController = navController, viewModel = authViewModel)
+        }
+        composable("nearby") {
+            NearbyStationsScreen(navController = navController, viewModel = authViewModel)
         }
     }
 }
+
