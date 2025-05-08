@@ -1,5 +1,6 @@
 package com.group13.weatherappfirstassignment.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,8 +15,6 @@ import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import com.group13.weatherappfirstassignment.ui.components.AppTopBar
 import com.group13.weatherappfirstassignment.viewmodels.AuthViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 @Composable
 fun NearbyStationsScreen(navController: NavController, viewModel: AuthViewModel) {
@@ -33,15 +32,13 @@ fun NearbyStationsScreen(navController: NavController, viewModel: AuthViewModel)
                 val response = repository.getStations()
                 if (response.isSuccessful) {
                     stations = response.body()?.features ?: emptyList()
-                    isLoading = false
                 } else {
                     errorMessage = "Error: ${response.code()}"
-                    isLoading = false
                 }
             } catch (e: Exception) {
                 errorMessage = "Exception: ${e.message}"
-                isLoading = false
             }
+            isLoading = false
         }
     }
 
@@ -101,7 +98,14 @@ fun NearbyStationsScreen(navController: NavController, viewModel: AuthViewModel)
                         items(stations) { station ->
                             Card(
                                 elevation = 4.dp,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        val id = station.properties.stationId
+                                        if (!id.isNullOrBlank()) {
+                                            navController.navigate("stationDetail/$id")
+                                        }
+                                    }
                             ) {
                                 Column(modifier = Modifier.padding(16.dp)) {
                                     Text("Station ID: ${station.properties.stationId}")

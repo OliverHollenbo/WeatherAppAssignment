@@ -26,8 +26,9 @@ interface DmiApiService {
     ): Response<StationResponse>
 
     @GET("metObs/collections/observation/items")
-    suspend fun getObservations(
+    suspend fun getObservationsForStation(
         @Query("api-key") apiKey: String,
+        @Query("stationId") stationId: String,
         @Query("limit") limit: Int = 100
     ): Response<WeatherObservation>
 }

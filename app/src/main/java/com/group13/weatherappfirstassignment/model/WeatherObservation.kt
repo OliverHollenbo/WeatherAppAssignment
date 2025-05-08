@@ -25,8 +25,8 @@ data class Properties(
     @SerializedName("value")
     val value: Double?,
 
-    @SerializedName("timeObserved")
-    val timeObserved: String?
+    @SerializedName("observed")
+    val observed: String?
 )
 
 data class Geometry(

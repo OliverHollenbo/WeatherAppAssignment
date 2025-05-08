@@ -11,7 +11,7 @@ class DmiRepository {
         return api.getStations(apiKey)
     }
 
-    suspend fun getLatestObservations(): Response<WeatherObservation> {
-        return api.getObservations(apiKey)
+    suspend fun getLatestObservationsForStation(stationId: String): Response<WeatherObservation> {
+        return api.getObservationsForStation(apiKey, stationId)
     }
 }

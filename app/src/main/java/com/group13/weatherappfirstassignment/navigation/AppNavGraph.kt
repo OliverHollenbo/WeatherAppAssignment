@@ -6,10 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.group13.weatherappfirstassignment.screens.HomeScreen
-import com.group13.weatherappfirstassignment.screens.LoginScreen
-import com.group13.weatherappfirstassignment.screens.NearbyStationsScreen
-import com.group13.weatherappfirstassignment.screens.SignupScreen
+import com.group13.weatherappfirstassignment.screens.*
 import com.group13.weatherappfirstassignment.viewmodels.AuthViewModel
 
 @Composable
@@ -33,6 +30,13 @@ fun AppNavGraph(startDestination: String) {
         composable("nearby") {
             NearbyStationsScreen(navController = navController, viewModel = authViewModel)
         }
+        composable("stationDetail/{stationId}") { backStackEntry ->
+            val stationId = backStackEntry.arguments?.getString("stationId") ?: ""
+            StationDetailScreen(
+                navController = navController,
+                stationId = stationId,
+                viewModel = authViewModel
+            )
+        }
     }
 }
-
