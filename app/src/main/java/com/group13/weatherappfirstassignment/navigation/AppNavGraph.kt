@@ -38,5 +38,8 @@ fun AppNavGraph(startDestination: String) {
                 viewModel = authViewModel
             )
         }
+        composable("favorites") {
+            FavoritesScreen(navController = navController, viewModel = authViewModel)
+        }
     }
 }

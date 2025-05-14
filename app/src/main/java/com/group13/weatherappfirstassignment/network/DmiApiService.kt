@@ -22,7 +22,7 @@ interface DmiApiService {
     @GET("metObs/collections/station/items")
     suspend fun getStations(
         @Query("api-key") apiKey: String,
-        @Query("limit") limit: Int = 100
+        //@Query("limit") limit: Int = 100
     ): Response<StationResponse>
 
     @GET("metObs/collections/observation/items")

@@ -6,6 +6,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,20 +19,19 @@ import com.group13.weatherappfirstassignment.ui.components.AppDrawer
 import com.group13.weatherappfirstassignment.ui.components.AppTopBar
 import com.group13.weatherappfirstassignment.viewmodels.AuthViewModel
 import kotlinx.coroutines.launch
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
 
 @Composable
-fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
+fun FavoritesScreen(
+    navController: NavController,
+    viewModel: AuthViewModel
+) {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
-    var searchQuery by remember { mutableStateOf("") }
-    var stations by remember { mutableStateOf<List<StationFeature>>(emptyList()) }
+    val favoriteIds by viewModel.favoriteStationIds.collectAsState()
+    var allStations by remember { mutableStateOf<List<StationFeature>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
-    var error by remember { mutableStateOf<String?>(null) }
-
-    val favorites by viewModel.favoriteStationIds.collectAsState()
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.loadFavorites()
@@ -38,28 +39,32 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
             try {
                 val response = DmiRepository().getStations()
                 if (response.isSuccessful) {
-                    stations = response.body()?.features ?: emptyList()
+                    allStations = response.body()?.features ?: emptyList()
                 } else {
-                    error = "Failed to load stations: ${response.code()}"
+                    errorMessage = "DMI API Error: ${response.code()}"
                 }
             } catch (e: Exception) {
-                error = "Error: ${e.message}"
+                errorMessage = "Error fetching stations: ${e.message}"
             }
             isLoading = false
         }
     }
 
-    val filteredStations = stations.filter {
-        it.properties.name.contains(searchQuery, ignoreCase = true) ||
-                it.properties.stationId.contains(searchQuery, ignoreCase = true)
-    }
+    val favoriteStations = allStations.filter { it.properties.stationId in favoriteIds }
 
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
             AppTopBar(
-                title = "Home",
-                onMenuClick = { scope.launch { scaffoldState.drawerState.open() } }
+                title = "Favorite Stations",
+                onMenuClick = { scope.launch { scaffoldState.drawerState.open() } },
+                onLogoutClick = {
+                    viewModel.logout {
+                        navController.navigate("login") {
+                            popUpTo("favorites") { inclusive = true }
+                        }
+                    }
+                }
             )
         },
         drawerContent = {
@@ -70,43 +75,39 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
                 onLogout = {
                     viewModel.logout {
                         navController.navigate("login") {
-                            popUpTo("home") { inclusive = true }
+                            popUpTo("favorites") { inclusive = true }
                         }
                     }
                 }
             )
         }
-    ) { paddingValues ->
-        Column(
+    ) { padding ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
+                .padding(padding)
         ) {
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                label = { Text("Search Stations...") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             when {
-                isLoading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
+                isLoading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
 
-                error != null -> Text(
-                    text = error ?: "Unknown error",
-                    color = MaterialTheme.colors.error,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                errorMessage != null -> Text(
+                    text = errorMessage ?: "Unknown error",
+                    modifier = Modifier.align(Alignment.Center),
+                    color = MaterialTheme.colors.error
                 )
 
-                else -> LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    items(filteredStations) { station ->
+                favoriteStations.isEmpty() -> Text(
+                    "No favorites found.",
+                    modifier = Modifier.align(Alignment.Center)
+                )
+
+                else -> LazyColumn(
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(favoriteStations) { station ->
                         val stationId = station.properties.stationId ?: ""
-                        val isFavorited = favorites.contains(stationId)
+                        val isFavorited = favoriteIds.contains(stationId)
 
                         Card(
                             elevation = 4.dp,
@@ -122,9 +123,7 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
                                     modifier = Modifier
                                         .weight(1f)
                                         .clickable {
-                                            if (stationId.isNotBlank()) {
-                                                navController.navigate("stationDetail/$stationId")
-                                            }
+                                            navController.navigate("stationDetail/$stationId")
                                         }
                                 ) {
                                     Text("Station ID: $stationId")
@@ -140,7 +139,7 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
                                 }) {
                                     Icon(
                                         imageVector = if (isFavorited) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                                        contentDescription = if (isFavorited) "Unfavorite" else "Favorite"
+                                        contentDescription = if (isFavorited) "Remove from favorites" else "Add to favorites"
                                     )
                                 }
                             }
