@@ -16,6 +16,9 @@ okhttp = "5.0.0-alpha.14"
 accompanistInsets = "0.30.1"
 
 [libraries]
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version = "21.3.0" }
+accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version = "0.30.1" }
+
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "composeUi" }

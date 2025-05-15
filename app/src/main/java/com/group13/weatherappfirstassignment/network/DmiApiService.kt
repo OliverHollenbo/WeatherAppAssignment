@@ -11,7 +11,13 @@ data class Station(
 )
 
 data class StationFeature(
+    val geometry: Geometry,
     val properties: Station
+)
+
+data class Geometry(
+    val type: String,
+    val coordinates: List<Double> // [longitude, latitude]
 )
 
 data class StationResponse(

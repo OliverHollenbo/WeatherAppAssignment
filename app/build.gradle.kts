@@ -48,6 +48,10 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
 
+    implementation(libs.play.services.location)
+    implementation(libs.accompanist.permissions)
+
+
     // Compose and Material
     implementation(libs.compose.ui)
     implementation(libs.material)
