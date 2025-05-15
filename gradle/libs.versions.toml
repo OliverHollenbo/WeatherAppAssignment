@@ -14,10 +14,16 @@ navigationCompose = "2.8.9"
 retrofit = "2.11.0"
 okhttp = "5.0.0-alpha.14"
 accompanistInsets = "0.30.1"
+accompanistPermissions = "0.30.1"
+playServicesLocation = "21.3.0"
+playServicesMaps = "18.2.0"
+mapsCompose = "4.1.1"
 
 [libraries]
-play-services-location = { group = "com.google.android.gms", name = "play-services-location", version = "21.3.0" }
-accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version = "0.30.1" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "mapsCompose" }
+accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanistPermissions" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }

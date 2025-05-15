@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LibraryAdd
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +31,7 @@ fun AppDrawer(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.surface)
-            .statusBarsPadding() // ✅ Handles top inset correctly
+            .statusBarsPadding()
             .padding(horizontal = 20.dp, vertical = 12.dp)
     ) {
         Text(
@@ -56,6 +57,11 @@ fun AppDrawer(
 
         DrawerButton("Favorite Stations", Icons.Default.LibraryAdd) {
             navController.navigate("favorites")
+            scope.launch { scaffoldState.drawerState.close() }
+        }
+
+        DrawerButton("Map View", Icons.Default.Map) {
+            navController.navigate("map")
             scope.launch { scaffoldState.drawerState.close() }
         }
 

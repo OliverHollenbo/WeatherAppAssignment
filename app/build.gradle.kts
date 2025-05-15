@@ -49,8 +49,9 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
 
     implementation(libs.play.services.location)
+    implementation(libs.play.services.maps)
+    implementation(libs.maps.compose)
     implementation(libs.accompanist.permissions)
-
 
     // Compose and Material
     implementation(libs.compose.ui)

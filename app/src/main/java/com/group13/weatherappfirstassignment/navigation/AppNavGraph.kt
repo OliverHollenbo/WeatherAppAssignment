@@ -41,5 +41,8 @@ fun AppNavGraph(startDestination: String) {
         composable("favorites") {
             FavoritesScreen(navController = navController, viewModel = authViewModel)
         }
+        composable("map") {
+            MapScreen(navController = navController)
+        }
     }
 }
