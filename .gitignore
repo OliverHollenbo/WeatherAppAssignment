@@ -21,7 +21,6 @@ Thumbs.db
 *.kotlin_module
 
 # Firebase
-google-services.json
 *.keystore
 *.jks
 
